@@ -1,0 +1,70 @@
+INPUT:
+
+def get_valid_input(prompt):
+    """Function to get valid space-separated integers from the user."""
+    while True:
+        try:
+            user_input = input(prompt)
+            values = list(map(int, user_input.split()))
+            return values
+        except ValueError:
+            print("Invalid input. Please enter space-separated integers only.")
+
+class WorstFit:
+    def worstFit(self, blockSize, processSize):
+        m = len(blockSize)
+        n = len(processSize)
+        allocation = [-1] * n
+
+        for i in range(n):
+            wstIdx = -1
+            for j in range(m):
+                if blockSize[j] >= processSize[i]:
+                    if wstIdx == -1 or blockSize[wstIdx] < blockSize[j]:
+                        wstIdx = j
+
+            if wstIdx != -1:
+                allocation[i] = wstIdx
+                blockSize[wstIdx] -= processSize[i]
+
+        print("\nProcess No.\tProcess Size\tBlock no.")
+        for i in range(n):
+            print(f"{i + 1}\t\t{processSize[i]}\t\t", end=" ")
+            if allocation[i] != -1:
+                print(allocation[i] + 1)
+            else:
+                print("Not Allocated")
+
+def main():
+    worst = WorstFit()
+
+    print("\nEnter the number of Blocks: ")
+    m = int(input())
+    print("Enter the number of Processes: ")
+    n = int(input())
+
+    blockSize = get_valid_input("Enter the Size of all the blocks (space-separated): ")
+    processSize = get_valid_input("Enter the Size of all the processes (space-separated): ")
+
+    print("\nWorst Fit Output")
+    worst.worstFit(blockSize[:], processSize)  # Pass a copy to avoid modifying the original list
+
+if __name__ == "__main__":
+    main()
+
+
+OUTPUT:
+
+Enter the number of Blocks: 
+5
+Enter the number of Processes: 
+00 200 300 600
+Enter the Size of all the processes (space-separated): 212 417 112 426
+
+Worst Fit Output
+
+Process No.     Process Size    Block no.
+1               212              5
+2               417              2
+3               112              5
+4               426              Not Allocated

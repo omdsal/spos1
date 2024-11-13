@@ -1,0 +1,67 @@
+INPUT:
+
+def get_valid_input(prompt):
+    """Function to get valid space-separated integers from the user."""
+    while True:
+        try:
+            user_input = input(prompt)
+            values = list(map(int, user_input.split()))
+            return values
+        except ValueError:
+            print("Invalid input. Please enter space-separated integers only.")
+
+class FirstFit:
+    def firstFit(self, blockSize, processSize):
+        m = len(blockSize)
+        n = len(processSize)
+        allocation = [-1] * n
+
+        for i in range(n):
+            for j in range(m):
+                if blockSize[j] >= processSize[i]:
+                    allocation[i] = j
+                    blockSize[j] -= processSize[i]
+                    break
+
+        print("\nProcess No.\tProcess Size\tBlock no.")
+        for i in range(n):
+            print(f"{i + 1}\t\t{processSize[i]}\t\t", end=" ")
+            if allocation[i] != -1:
+                print(allocation[i] + 1)
+            else:
+                print("Not Allocated")
+
+def main():
+    first = FirstFit()
+
+    print("\nEnter the number of Blocks: ")
+    m = int(input())
+    print("Enter the number of Processes: ")
+    n = int(input())
+
+    blockSize = get_valid_input("Enter the Size of all the blocks (space-separated): ")
+    processSize = get_valid_input("Enter the Size of all the processes (space-separated): ")
+
+    print("\nFirst Fit Output")
+    first.firstFit(blockSize[:], processSize)  # Pass a copy to avoid modifying the original list
+
+if __name__ == "__main__":
+    main()
+
+
+OUTPUT:
+
+Enter the number of Blocks: 
+5
+Enter the number of Processes: 
+4
+Enter the Size of all the blocks (space-separated): 100 500 200 300 600
+Enter the Size of all the processes (space-separated): 212 417 112 426
+
+First Fit Output
+
+Process No.     Process Size    Block no.
+1               212              2
+2               417              5
+3               112              2
+4               426              Not Allocated

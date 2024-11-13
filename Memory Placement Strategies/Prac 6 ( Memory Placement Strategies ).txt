@@ -1,0 +1,259 @@
+INPUT:
+
+class FirstFit:
+    def firstFit(self, blockSize, processSize):
+        m = len(blockSize)
+        n = len(processSize)
+        allocation = [-1] * n
+
+        for i in range(n):
+            for j in range(m):
+                if blockSize[j] >= processSize[i]:
+                    allocation[i] = j
+                    blockSize[j] -= processSize[i]
+                    break
+
+        print("\nProcess No.\tProcess Size\tBlock no.")
+        for i in range(n):
+            print(f"{i + 1}\t\t{processSize[i]}\t\t", end=" ")
+            if allocation[i] != -1:
+                print(allocation[i] + 1)
+            else:
+                print("Not Allocated")
+
+class NextFit:
+    def nextFit(self, blockSize, processSize):
+        m = len(blockSize)
+        n = len(processSize)
+        allocation = [-1] * n
+        j = 0
+
+        for i in range(n):
+            count = 0
+            while count < m:
+                if blockSize[j] >= processSize[i]:
+                    allocation[i] = j
+                    blockSize[j] -= processSize[i]
+                    break
+                j = (j + 1) % m
+                count += 1
+
+        print("\nProcess No.\tProcess Size\tBlock no.")
+        for i in range(n):
+            print(f"{i + 1}\t\t{processSize[i]}\t\t", end=" ")
+            if allocation[i] != -1:
+                print(allocation[i] + 1)
+            else:
+                print("Not Allocated")
+
+class WorstFit:
+    def worstFit(self, blockSize, processSize):
+        m = len(blockSize)
+        n = len(processSize)
+        allocation = [-1] * n
+
+        for i in range(n):
+            wstIdx = -1
+            for j in range(m):
+                if blockSize[j] >= processSize[i]:
+                    if wstIdx == -1 or blockSize[wstIdx] < blockSize[j]:
+                        wstIdx = j
+
+            if wstIdx != -1:
+                allocation[i] = wstIdx
+                blockSize[wstIdx] -= processSize[i]
+
+        print("\nProcess No.\tProcess Size\tBlock no.")
+        for i in range(n):
+            print(f"{i + 1}\t\t{processSize[i]}\t\t", end=" ")
+            if allocation[i] != -1:
+                print(allocation[i] + 1)
+            else:
+                print("Not Allocated")
+
+class BestFit:
+    def bestFit(self, blockSize, processSize):
+        m = len(blockSize)
+        n = len(processSize)
+        allocation = [-1] * n
+
+        for i in range(n):
+            bestIdx = -1
+            for j in range(m):
+                if blockSize[j] >= processSize[i]:
+                    if bestIdx == -1 or blockSize[bestIdx] > blockSize[j]:
+                        bestIdx = j
+
+            if bestIdx != -1:
+                allocation[i] = bestIdx
+                blockSize[bestIdx] -= processSize[i]
+
+        print("\nProcess No.\tProcess Size\tBlock no.")
+        for i in range(n):
+            print(f"{i + 1}\t\t{processSize[i]}\t\t", end=" ")
+            if allocation[i] != -1:
+                print(allocation[i] + 1)
+            else:
+                print("Not Allocated")
+
+def get_valid_input(prompt):
+    """Function to get valid space-separated integers from the user."""
+    while True:
+        try:
+            user_input = input(prompt)
+            values = list(map(int, user_input.split()))
+            return values
+        except ValueError:
+            print("Invalid input. Please enter space-separated integers only.")
+
+def main():
+    first = FirstFit()
+    next_fit = NextFit()
+    worst = WorstFit()
+    best = BestFit()
+
+    while True:
+        print("\n--- Memory Allocation Menu ---")
+        print("1. First Fit")
+        print("2. Next Fit")
+        print("3. Worst Fit")
+        print("4. Best Fit")
+        print("5. Exit")
+
+        choice = int(input("Select the algorithm you want to implement (1-5): "))
+
+        if choice == 5:
+            print("Exiting the code...")
+            break
+
+        # Input for blocks and processes
+        print("\nEnter the number of Blocks: ")
+        m = int(input())
+        print("Enter the number of Processes: ")
+        n = int(input())
+
+        blockSize = get_valid_input("Enter the Size of all the blocks (space-separated): ")
+        processSize = get_valid_input("Enter the Size of all the processes (space-separated): ")
+
+        # Based on user's choice, call the appropriate algorithm function
+        if choice == 1:
+            print("\nFirst Fit Output")
+            first.firstFit(blockSize[:], processSize)  # Pass a copy to avoid modifying the original list
+        elif choice == 2:
+            print("\nNext Fit Output")
+            next_fit.nextFit(blockSize[:], processSize)
+        elif choice == 3:
+            print("\nWorst Fit Output")
+            worst.worstFit(blockSize[:], processSize)
+        elif choice == 4:
+            print("\nBest Fit Output")
+            best.bestFit(blockSize[:], processSize)
+        else:
+            print("Invalid option. Please select a valid algorithm.")
+
+if __name__ == "__main__":
+    main()
+
+
+OUTPUT:
+
+--- Memory Allocation Menu ---
+1. First Fit
+2. Next Fit
+3. Worst Fit
+4. Best Fit
+5. Exit
+Select the algorithm you want to implement (1-5): 1
+
+Enter the number of Blocks: 
+5
+Enter the number of Processes:
+4
+Enter the Size of all the blocks (space-separated): 100 500 200 300 600
+Enter the Size of all the processes (space-separated): 212 417 112 426
+
+First Fit Output
+
+Process No.     Process Size    Block no.
+1               212              2
+2               417              5
+3               112              2
+4               426              Not Allocated
+
+--- Memory Allocation Menu ---
+1. First Fit
+2. Next Fit
+3. Worst Fit
+4. Best Fit
+5. Exit
+Select the algorithm you want to implement (1-5): 2
+
+Enter the number of Blocks:
+5
+Enter the number of Processes:
+4
+Enter the Size of all the blocks (space-separated): 100 500 200 300 600
+Enter the Size of all the processes (space-separated): 212 417 112 426
+
+Next Fit Output
+
+Process No.     Process Size    Block no.
+1               212              2
+2               417              5
+3               112              5
+4               426              Not Allocated
+
+--- Memory Allocation Menu ---
+1. First Fit
+2. Next Fit
+3. Worst Fit
+4. Best Fit
+5. Exit
+Select the algorithm you want to implement (1-5): 3
+
+Enter the number of Blocks:
+5
+Enter the number of Processes:
+4
+Enter the Size of all the blocks (space-separated):  100 500 200 300 600
+Enter the Size of all the processes (space-separated): 212 417 112 426
+
+Worst Fit Output
+
+Process No.     Process Size    Block no.
+1               212              5
+2               417              2
+3               112              5
+4               426              Not Allocated
+
+--- Memory Allocation Menu ---
+1. First Fit
+2. Next Fit
+3. Worst Fit
+4. Best Fit
+5. Exit
+Select the algorithm you want to implement (1-5): 4
+
+Enter the number of Blocks:
+5
+Enter the number of Processes:
+4
+Enter the Size of all the blocks (space-separated):  100 500 200 300 600
+Enter the Size of all the processes (space-separated): 212 417 112 426
+
+Best Fit Output
+
+Process No.     Process Size    Block no.
+1               212              4
+2               417              2
+3               112              3
+4               426              5
+
+--- Memory Allocation Menu ---
+1. First Fit
+2. Next Fit
+3. Worst Fit
+4. Best Fit
+5. Exit
+Select the algorithm you want to implement (1-5): 5
+Exiting the code...

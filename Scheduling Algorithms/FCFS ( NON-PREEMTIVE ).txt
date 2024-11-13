@@ -1,0 +1,74 @@
+INPUT:
+
+def fcfs_scheduling():
+    processes = int(input("Enter the number of processes (up to 6): "))
+
+    bt = [0] * processes  # Burst times
+    wt = [0] * processes  # Waiting times
+    tt = [0] * processes  # Turnaround times
+    ct = [0] * processes  # Completion times
+    arrival_times = [0] * processes  # Arrival times
+
+    # Get the arrival times from the user
+    print("Enter arrival times:")
+    for i in range(processes):
+        arrival_times[i] = int(input(f"Process {i + 1} arrival time: "))
+
+    # Get the burst times from the user
+    print("Enter burst times:")
+    for i in range(processes):
+        bt[i] = int(input(f"Process {i + 1} burst time: "))
+
+    # Calculate completion times, turnaround times, and waiting times
+    exit_times = [0] * processes
+    for i in range(processes):
+        if i == 0:
+            exit_times[i] = arrival_times[i] + bt[i]
+        else:
+            exit_times[i] = max(arrival_times[i], exit_times[i - 1]) + bt[i]
+        ct[i] = exit_times[i]  # Completion time is the exit time
+        tt[i] = ct[i] - arrival_times[i]  # Turnaround time
+        wt[i] = tt[i] - bt[i]  # Waiting time
+
+    # Calculate total waiting time and turnaround time
+    total_wt = sum(wt)
+    total_tt = sum(tt)
+
+    # Display the process table
+    print("\nProcess\tBurst Time\tArrival Time\tCompletion Time\tWaiting Time\tTurnaround Time")
+    for i in range(processes):
+        print(f"{i + 1:<7}\t{bt[i]:<12}\t{arrival_times[i]:<14}\t{ct[i]:<15}\t{wt[i]:<14}\t{tt[i]:<15}")
+
+    # Display average waiting time and turnaround time
+    print(f"\nAverage Waiting Time: {total_wt / processes:.2f}")
+    print(f"Average Turnaround Time: {total_tt / processes:.2f}")
+
+def main():
+    fcfs_scheduling()
+
+if __name__ == "__main__":
+    main()
+
+
+OUTPUT:
+
+Enter the number of processes (up to 6): 4
+Enter arrival times:
+Process 1 arrival time: 0
+Process 2 arrival time: 1
+Process 3 arrival time: 5
+Process 4 arrival time: 6
+Enter burst times:
+Process 1 burst time: 2
+Process 2 burst time: 2
+Process 3 burst time: 3
+Process 4 burst time: 4
+
+Process Burst Time      Arrival Time    Completion Time Waiting Time    Turnaround Time
+1       2               0               2               0               2
+2       2               1               4               1               3
+3       3               5               8               0               3
+4       4               6               12              2               6
+
+Average Waiting Time: 0.75
+Average Turnaround Time: 3.50

@@ -1,0 +1,105 @@
+INPUT:
+
+def preemptive_priority_scheduling():
+    n = int(input("Enter the number of processes: "))
+    
+    # Arrays for burst time, arrival time, priority, and process ids
+    burst_time = [0] * n
+    arrival_time = [0] * n
+    priority = [0] * n
+    remaining_time = [0] * n  # Remaining burst time for preemption
+
+    # Get the arrival times, burst times, and priorities from the user
+    print("Enter arrival times, burst times, and priorities for each process:")
+    for i in range(n):
+        arrival_time[i] = int(input(f"Process {i + 1} arrival time: "))
+        burst_time[i] = int(input(f"Process {i + 1} burst time: "))
+        priority[i] = int(input(f"Process {i + 1} priority (lower is higher priority): "))
+        remaining_time[i] = burst_time[i]  # Initially remaining time equals burst time
+    
+    # Completion time, waiting time, and turnaround time
+    completion_time = [0] * n
+    waiting_time = [0] * n
+    turnaround_time = [0] * n
+    start_time = [-1] * n  # To store start time for each process
+    current_time = 0  # Current time for the system
+    completed = 0  # Count of completed processes
+    is_completed = [False] * n  # Track if the process is completed
+
+    # Process the tasks based on priority (preemptively)
+    while completed < n:
+        # Find the process with the highest priority (lowest number) that has arrived
+        idx = -1
+        highest_priority = float('inf')
+
+        for i in range(n):
+            if arrival_time[i] <= current_time and not is_completed[i]:
+                if priority[i] < highest_priority:
+                    highest_priority = priority[i]
+                    idx = i
+
+        if idx != -1:  # A process is ready to execute
+            # If this is the first time the process is starting, store the start time
+            if start_time[idx] == -1:
+                start_time[idx] = current_time
+
+            # Execute the process for one unit of time
+            remaining_time[idx] -= 1
+            current_time += 1
+
+            # If the process is completed
+            if remaining_time[idx] == 0:
+                is_completed[idx] = True
+                completed += 1
+                completion_time[idx] = current_time
+                turnaround_time[idx] = completion_time[idx] - arrival_time[idx]
+                waiting_time[idx] = turnaround_time[idx] - burst_time[idx]
+        else:
+            # If no process is ready to execute, simply increment the time
+            current_time += 1
+
+    # Display the results
+    print("\nProcess\tArrival Time\tBurst Time\tPriority\tStart Time\tCompletion Time\tWaiting Time\tTurnaround Time")
+    total_wt = 0
+    total_tt = 0
+    for i in range(n):
+        total_wt += waiting_time[i]
+        total_tt += turnaround_time[i]
+        print(f"{i + 1}\t{arrival_time[i]}\t\t{burst_time[i]}\t\t{priority[i]}\t\t{start_time[i]}\t\t{completion_time[i]}\t\t{waiting_time[i]}\t\t{turnaround_time[i]}")
+
+    # Display average waiting time and turnaround time
+    print(f"\nAverage Waiting Time: {total_wt / n:.2f}")
+    print(f"Average Turnaround Time: {total_tt / n:.2f}")
+
+def main():
+    preemptive_priority_scheduling()
+
+if __name__ == "__main__":
+    main()
+
+
+OUTPUT:
+
+Enter the number of processes: 4
+Enter arrival times, burst times, and priorities for each process:
+Process 1 arrival time: 0
+Process 1 burst time: 5
+Process 1 priority (lower is higher priority): 40
+Process 2 arrival time: 1
+Process 2 burst time: 4
+Process 2 priority (lower is higher priority): 30
+Process 3 arrival time: 2
+Process 3 burst time: 2
+Process 3 priority (lower is higher priority): 20
+Process 4 arrival time: 4
+Process 4 burst time: 1
+Process 4 priority (lower is higher priority): 10
+
+Process Arrival Time    Burst Time      Priority        Start Time      Completion Time Waiting Time    Turnaround Time
+1       0               5               40              0               12              7               12
+2       1               4               30              1               8               3               7
+3       2               2               20              2               4               0               2
+4       4               1               10              4               5               0               1
+
+Average Waiting Time: 2.50
+Average Turnaround Time: 5.50
